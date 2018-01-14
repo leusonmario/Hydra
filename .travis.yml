@@ -1,5 +1,27 @@
+
+sudo: required
 language: java
+
 jdk:
   - oraclejdk7
   - openjdk6
-services: mongodb
+
+
+script:
+  - mvn clean cobertura:cobertura -Dtest=AbstractProcessStageTest#processing -DfailIfNoTests=false
+
+before_deploy:
+- tar -zcvf coverage-result.tar.gz /home/travis/build/leusonmario/Hydra/target/site/cobertura
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "SsKybcHyQHCG0bjNEUOs9PvpuLhNvWtwl6a+ft3iG2ATrU46cNEGfNv6unoEp/229r8YWfxNUrXv8loT6XpaFZfuWns5a39BE1VnDtdId8GOMjSUpo/RoqwblWmq5NLgnDoXBJdg/xTp8bNxaC5M2ZC8xOLPc10ZRh2OR2gxAF8a7wkysmBGgsdc46Rd9jQkDHvH7139P+lKcCCgNSEumZO0FvrWodUQWYoc0Ofhg3Ve59H65+n6UjTkfHqYTx4u1py+MsS7ntqoEHVniXqpsfgtgrcbvrSoLdWaKL0KmWQ/9OD5Vh5L1axQd5fWEpAbr1YnGliAS1eD9faXFMLgkxPul/S0biAHxnztnkMEPJyM1bN9s/yxDMLB8WGC73lMyr4bd1w2DH6IxibZOmf3bmoXgw3oJ6oxZvYjimxABpcKeZfkCZ4EK3yvJ9lUU8uohwU2cyMr9jhl6BqSIMabfQNaEwQ5Y/UFBJ/84ju7jwkxgKD2ICz3HjTQ18ybmYWeVxDva+p0CDUWCp8jhg88XnQjR9T4v4eAYIuYF/3+XXtIoZtA31LoES8dpbcWpxxzaAEAO2RodmCNRYcoKAZUj/uMJ0QG/EQQRClyy+rxg+vNLzunJwDFC/cNFZScfXCs/4v9UNHt+LxR+1VtpSxa4imWB4v7JnoU6b3M4TdISsg="
+
+
+  file: coverage-result.tar.gz
+  file_glob: true
+  overwrite: true
+  skip_cleanup: true
+  on:
+    tags: true
